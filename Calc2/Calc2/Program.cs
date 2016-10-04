@@ -13,7 +13,7 @@ namespace Calc2
             string mathstring = null;
             Value value = new Value();
             //mathstring = Console.ReadLine();
-            mathstring = "1+2+3*2+4-1";//for debug
+            mathstring = "(1+2+3)*2+4-1";//for debug
             long ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -27,7 +27,7 @@ namespace Calc2
         Value Right;
         long num;
 
-
+        /*括弧がなくなった時、呼び出す*/
         public long devided(string eq)
         {
 
@@ -101,7 +101,6 @@ namespace Calc2
         public abstract double calc(double a, double b);
         public abstract double calc(double a, long b);
     }
-
 
     class Plus : ToM_Math
     {
@@ -190,5 +189,16 @@ namespace Calc2
 
         }
 
+    }
+
+    /*括弧：bracketの内側をdevidedに送るクラス*/
+    public class RmBracket
+    {
+        string eq;
+        RmBracket(string eq)
+        {
+            eq = this.eq;
+        }
+        string GetInsideBracket()
     }
 }
