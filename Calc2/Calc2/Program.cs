@@ -194,11 +194,30 @@ namespace Calc2
     /*括弧：bracketの内側をdevidedに送るクラス*/
     public class RmBracket
     {
+        Pair pair= new Pair();
         string eq;
         RmBracket(string eq)
         {
             eq = this.eq;
         }
-        string GetInsideBracket()
+        public string GetInsideBracket()
+        {
+            int leftpos=0, rightpos = 0;
+            for(int i = 0; i < eq.Length; i++)
+            {
+                if (eq[i]=='(')
+                {
+                    leftpos = i;
+                }
+            }
+            for(int i = leftpos; i < eq.Length; i++)
+            {
+                if (eq[i] == ')')
+                {
+                    rightpos = i;
+                }
+            }
+            return null;
+        }
     }
 }
