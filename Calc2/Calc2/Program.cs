@@ -202,6 +202,7 @@ namespace Calc2
         }
         public string GetInsideBracket()
         {
+            //もっとも左端の括弧を探す
             int leftpos=0, rightpos = 0;
             for(int i = 0; i < eq.Length; i++)
             {
@@ -210,6 +211,7 @@ namespace Calc2
                     leftpos = i;
                 }
             }
+            //もっとも左端の括弧に最も近い右端の括弧を探す
             for(int i = leftpos; i < eq.Length; i++)
             {
                 if (eq[i] == ')')
@@ -217,6 +219,10 @@ namespace Calc2
                     rightpos = i;
                 }
             }
+            //value.devide()に括弧の内側だけ送る。
+            eq.Substring(leftpos,rightpos);
+            //帰ってきた式の型をチェックして、
+
             return null;
         }
     }
