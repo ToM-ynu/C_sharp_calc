@@ -171,7 +171,7 @@ namespace Calc2
 
         public override long calc(long a, long b)
         {
-            return a - b;
+            return a / b;
 
         }
     }
