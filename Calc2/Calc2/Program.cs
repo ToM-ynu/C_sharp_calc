@@ -48,6 +48,14 @@ namespace Calc2
         }
         private long calc(string eq)
         {
+
+
+            //先頭と末尾が括弧ならそれは優先して結果を求める必要がある
+            //(1*2)-3
+            //    ↑ここのマイナスが一番最初に処理されるべき。(この方法を使えば、数字をObjectとして扱える)
+
+
+
             Pair pair = new Pair();
             Plus plus = new Plus();
             Devided devided = new Devided();
@@ -184,6 +192,7 @@ namespace Calc2
             First = x;
             Second = y;
         }
+
         public Pair()
         {
 
@@ -200,7 +209,7 @@ namespace Calc2
         {
             eq = this.eq;
         }
-        public string GetInsideBracket()
+        public string GetInsideBracket()//括弧の中の数式を探し、それの解を求める。
         {
             //もっとも左端の括弧を探す
             int leftpos=0, rightpos = 0;
@@ -219,9 +228,7 @@ namespace Calc2
                     rightpos = i;
                 }
             }
-            //value.devide()に括弧の内側だけ送る。
-            eq.Substring(leftpos,rightpos);
-            //帰ってきた式の型をチェックして、
+            //とりあえず括弧による数式の順序変更のみを行えるようにする(変数を扱うことは考えない)
 
             return null;
         }
