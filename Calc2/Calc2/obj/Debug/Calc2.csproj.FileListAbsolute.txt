@@ -1,1 +1,6 @@
 C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\bin\Debug\Calc2.exe.config
+C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\bin\Debug\Calc2.exe
+C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\bin\Debug\Calc2.pdb
+C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\obj\Debug\Calc2.csprojResolveAssemblyReference.cache
+C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\obj\Debug\Calc2.exe
+C:\Users\tomo8\C_sharp_calc\Calc2\Calc2\obj\Debug\Calc2.pdb
