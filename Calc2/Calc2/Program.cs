@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value value = new Value();
-            mathstring = Console.ReadLine();
-            //mathstring = "1+2+3*2+4-1";//for debug
+            //mathstring = Console.ReadLine();
+            mathstring = "(1+2+3)*2+4-1";//for debug
             long ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -27,7 +27,7 @@ namespace Calc2
         Value Right;
         long num;
 
-
+        /*括弧がなくなった時、呼び出す*/
         public long devided(string eq)
         {
 
@@ -48,6 +48,14 @@ namespace Calc2
         }
         private long calc(string eq)
         {
+
+
+            //先頭と末尾が括弧ならそれは優先して結果を求める必要がある
+            //(1*2)-3
+            //    ↑ここのマイナスが一番最初に処理されるべき。(この方法を使えば、数字をObjectとして扱える)
+
+
+
             Pair pair = new Pair();
             Plus plus = new Plus();
             Devided devided = new Devided();
@@ -101,7 +109,6 @@ namespace Calc2
         public abstract double calc(double a, double b);
         public abstract double calc(double a, long b);
     }
-
 
     class Plus : ToM_Math
     {
@@ -185,10 +192,45 @@ namespace Calc2
             First = x;
             Second = y;
         }
+
         public Pair()
         {
 
         }
 
+    }
+
+    /*括弧：bracketの内側をdevidedに送るクラス*/
+    public class RmBracket
+    {
+        Pair pair= new Pair();
+        string eq;
+        RmBracket(string eq)
+        {
+            eq = this.eq;
+        }
+        public string GetInsideBracket()//括弧の中の数式を探し、それの解を求める。
+        {
+            //もっとも左端の括弧を探す
+            int leftpos=0, rightpos = 0;
+            for(int i = 0; i < eq.Length; i++)
+            {
+                if (eq[i]=='(')
+                {
+                    leftpos = i;
+                }
+            }
+            //もっとも左端の括弧に最も近い右端の括弧を探す
+            for(int i = leftpos; i < eq.Length; i++)
+            {
+                if (eq[i] == ')')
+                {
+                    rightpos = i;
+                }
+            }
+            //とりあえず括弧による数式の順序変更のみを行えるようにする(変数を扱うことは考えない)
+
+            return null;
+        }
     }
 }
