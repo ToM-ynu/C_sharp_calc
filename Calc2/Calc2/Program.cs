@@ -48,14 +48,8 @@ namespace Calc2
         }
         private long calc(string eq)
         {
-
-
-            //先頭と末尾が括弧ならそれは優先して結果を求める必要がある
-            //(1*2)-3
-            //    ↑ここのマイナスが一番最初に処理されるべき。(この方法を使えば、数字をObjectとして扱える)
-
-
-
+            //括弧をみつけたら中を無視する。
+            //一番外に括弧があるときは、最初に取り除く。
             Pair pair = new Pair();
             Plus plus = new Plus();
             Devided devided = new Devided();
@@ -64,14 +58,32 @@ namespace Calc2
             Right = new Value();
             Left = new Calc2.Value();
             char op;
+            //一番外側の括弧の位置を把握する必要がある。
+            //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
+            //一番外側の括弧を取り除くことが必要
+            if (eq[0] == '(' && eq[eq.Length-1] == ')')
+            {
+                string eq2 = eq.Substring(1,eq.Length-2);
+                eq = eq2;
+            }
             char[] operater = new char[] { '+', '-', '*', '/' };
+            int bra_state = 0;
             for (int i = 0; i < operater.Length; i++)
             {
 
+
                 for (int j = 0; j < eq.Length; j++)
                 {
+                    if (eq[j] == '(')
+                    {
+                        bra_state++;
+                    }
+                    else if (eq[j] == ')')
+                    {
+                        bra_state--;
+                    }
                     op = eq[j];
-                    if (op == operater[i])
+                    if (op == operater[i] && bra_state == 0)//括弧が開いているときはbra_state==0になっている。
                     {
                         pair.First = operater[i];
                         pair.Second = j;
@@ -108,6 +120,7 @@ namespace Calc2
         public abstract long calc(long a, long b);
         public abstract double calc(double a, double b);
         public abstract double calc(double a, long b);
+        public abstract double calc(long a, double b);
     }
 
     class Plus : ToM_Math
@@ -123,6 +136,10 @@ namespace Calc2
         }
 
         public override long calc(long a, long b)
+        {
+            return a + b;
+        }
+        public override double calc(long a, double b)
         {
             return a + b;
         }
@@ -144,6 +161,10 @@ namespace Calc2
         {
             return a - b;
         }
+        public override double calc(long a, double b)
+        {
+            return a - b;
+        }
     }
 
     class Times : ToM_Math
@@ -159,6 +180,10 @@ namespace Calc2
         }
 
         public override long calc(long a, long b)
+        {
+            return a * b;
+        }
+        public override double calc(long a, double b)
         {
             return a * b;
         }
@@ -180,6 +205,10 @@ namespace Calc2
         {
             return a / b;
 
+        }
+        public override double calc(long a, double b)
+        {
+            return a / b;
         }
     }
 
@@ -203,7 +232,7 @@ namespace Calc2
     /*括弧：bracketの内側をdevidedに送るクラス*/
     public class RmBracket
     {
-        Pair pair= new Pair();
+        Pair pair = new Pair();
         string eq;
         RmBracket(string eq)
         {
@@ -212,16 +241,16 @@ namespace Calc2
         public string GetInsideBracket()//括弧の中の数式を探し、それの解を求める。
         {
             //もっとも左端の括弧を探す
-            int leftpos=0, rightpos = 0;
-            for(int i = 0; i < eq.Length; i++)
+            int leftpos = 0, rightpos = 0;
+            for (int i = 0; i < eq.Length; i++)
             {
-                if (eq[i]=='(')
+                if (eq[i] == '(')
                 {
                     leftpos = i;
                 }
             }
             //もっとも左端の括弧に最も近い右端の括弧を探す
-            for(int i = leftpos; i < eq.Length; i++)
+            for (int i = leftpos; i < eq.Length; i++)
             {
                 if (eq[i] == ')')
                 {
