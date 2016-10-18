@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value value = new Value();
-            //mathstring = Console.ReadLine();
-            mathstring = "(1+2+3)*2+4-1";//for debug
+            mathstring = Console.ReadLine();
+            //mathstring = "(1+2+3)*2+4-1";//for debug
             long ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -188,7 +188,6 @@ namespace Calc2
             return a * b;
         }
     }
-
     class Devided : ToM_Math
     {
         public override double calc(double a, long b)
