@@ -14,7 +14,7 @@ namespace Calc2
             Value value = new Value();
             mathstring = Console.ReadLine();
             //mathstring = "(1+2+3)*2+4-1";//for debug
-            long ans = value.devided(mathstring);
+            double ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
 
@@ -25,15 +25,15 @@ namespace Calc2
 
         Value Left;
         Value Right;
-        long num;
+        double num;
 
         /*括弧がなくなった時、呼び出す*/
-        public long devided(string eq)
+        public double devided(string eq)
         {
 
             try
             {
-                num = int.Parse(eq);//式が数字だけかどうかを判断する
+                num = double.Parse(eq);//式が数字だけかどうかを判断する
             }
             catch (FormatException)//string eqが式である時
             {
@@ -46,7 +46,7 @@ namespace Calc2
             }
             return num;
         }
-        private long calc(string eq)
+        private double calc(string eq)
         {
             //括弧をみつけたら中を無視する。
             //一番外に括弧があるときは、最初に取り除く。
@@ -93,7 +93,7 @@ namespace Calc2
             }
         LOOPOUT:
             //文字列を分解する。
-            long a = 0, b = 0;
+            double a = 0, b = 0;
             a = Left.devided(eq.Substring(0, pair.Second));
             b = Right.devided(eq.Substring(pair.Second + 1));
             switch (pair.First)
