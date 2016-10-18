@@ -1,6 +1,6 @@
 # C_sharp_calc
 
-Made by ToM @ynu 
+Made by ToM @Student of Yokohama National Univ. Japan
 Twitter: https://twitter.com/ToM_Udoncknn
 
 This progmram is Calculator.
