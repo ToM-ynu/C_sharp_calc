@@ -61,7 +61,16 @@ namespace Calc2
             //一番外側の括弧の位置を把握する必要がある。
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
             //一番外側の括弧を取り除くことが必要
-            if (eq[0] == '(' && eq[eq.Length-1] == ')')
+            int BraNum=0;
+            for(int i = 0; i < eq.Length; i++)
+            {
+                if (eq[i] == '(')
+                {
+                    //数式は正規的な表現になっているとき(どっかで正規的な表現かどうかを確認する処理を行う)
+                    BraNum++;
+                }
+            }
+            if (eq[0] == '(' && eq[eq.Length - 1] == ')' && BraNum == 1)
             {
                 string eq2 = eq.Substring(1,eq.Length-2);
                 eq = eq2;
