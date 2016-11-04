@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value value = new Value();
-            mathstring = Console.ReadLine();
-            //mathstring = "(1+2+3)*2+4-1";//for debug
+            //mathstring = Console.ReadLine();
+            mathstring = "(((1+2)*(3+4)))+1";//for debug
             double ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -61,46 +61,42 @@ namespace Calc2
             //一番外側の括弧の位置を把握する必要がある。
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
             //一番外側の括弧を取り除くことが必要
-            int BraNum=0;
-            for(int i = 0; i < eq.Length; i++)
+            bool Bra_rm = true;
+            do
             {
-                if (eq[i] == '(')
+                Bra_rm = false;
+                char[] operater = new char[] { '+', '-', '*', '/' };
+                int bra_state = 0;
+                for (int i = 0; i < operater.Length; i++)
                 {
-                    //数式は正規的な表現になっているとき(どっかで正規的な表現かどうかを確認する処理を行う)
-                    BraNum++;
-                }
-            }
-            if (eq[0] == '(' && eq[eq.Length - 1] == ')' && BraNum == 1)
-            {
-                string eq2 = eq.Substring(1,eq.Length-2);
-                eq = eq2;
-            }
-            char[] operater = new char[] { '+', '-', '*', '/' };
-            int bra_state = 0;
-            for (int i = 0; i < operater.Length; i++)
-            {
 
 
-                for (int j = 0; j < eq.Length; j++)
-                {
-                    if (eq[j] == '(')
+                    for (int j = 0; j < eq.Length; j++)
                     {
-                        bra_state++;
-                    }
-                    else if (eq[j] == ')')
-                    {
-                        bra_state--;
-                    }
-                    op = eq[j];
-                    if (op == operater[i] && bra_state == 0)//括弧が開いているときはbra_state==0になっている。
-                    {
-                        pair.First = operater[i];
-                        pair.Second = j;
-                        goto LOOPOUT;
+                        if (eq[j] == '(')
+                        {
+                            bra_state++;
+                        }
+                        else if (eq[j] == ')')
+                        {
+                            bra_state--;
+                        }
+                        op = eq[j];
+                        if (op == operater[i] && bra_state == 0)//括弧が開いているときはbra_state==0になっている。
+                        {
+                            pair.First = operater[i];
+                            pair.Second = j;
+                            goto LOOPOUT;
+                        }
                     }
                 }
-            }
-        LOOPOUT:
+            LOOPOUT:
+                if (pair.Second == 0)
+                {
+                    eq = eq.Substring(1, eq.Length - 2);
+                    Bra_rm=true;
+                }
+            } while (Bra_rm);
             //文字列を分解する。
             double a = 0, b = 0;
             a = Left.devided(eq.Substring(0, pair.Second));
