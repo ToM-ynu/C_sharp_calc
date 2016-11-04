@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value value = new Value();
-            mathstring = Console.ReadLine();
-            //mathstring = "(1+2+3)*2+4-1";//for debug
+            //mathstring = Console.ReadLine();
+            mathstring = "(1*2-3)*(0-4)";//for debug
             long ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -61,10 +61,13 @@ namespace Calc2
             //一番外側の括弧の位置を把握する必要がある。
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
             //一番外側の括弧を取り除くことが必要
-            if (eq[0] == '(' && eq[eq.Length-1] == ')')
+            if (eq.Length != 1)
             {
-                string eq2 = eq.Substring(1,eq.Length-2);
-                eq = eq2;
+                if (eq[0] == '(' && eq[eq.Length - 1] == ')')
+                {
+                    string eq2 = eq.Substring(1, eq.Length - 2);
+                    eq = eq2;
+                }
             }
             char[] operater = new char[] { '+', '-', '*', '/' };
             int bra_state = 0;
@@ -85,8 +88,7 @@ namespace Calc2
                     op = eq[j];
                     if (op == operater[i] && bra_state == 0)//括弧が開いているときはbra_state==0になっている。
                     {
-                        pair.First = operater[i];
-                        pair.Second = j;
+                        pair.set(operater[i], j);
                         goto LOOPOUT;
                     }
                 }
@@ -94,9 +96,9 @@ namespace Calc2
         LOOPOUT:
             //文字列を分解する。
             long a = 0, b = 0;
-            a = Left.devided(eq.Substring(0, pair.Second));
-            b = Right.devided(eq.Substring(pair.Second + 1));
-            switch (pair.First)
+            a = Left.devided(eq.Substring(0, pair.getPairSecond()));
+            b = Right.devided(eq.Substring(pair.getPairSecond() + 1));
+            switch (pair.getPairFirst())
             {
                 case '+':
                     num = plus.calc(a, b);
@@ -113,6 +115,7 @@ namespace Calc2
             }
             return num;
         }
+
     }
 
     public abstract class ToM_Math
@@ -215,10 +218,18 @@ namespace Calc2
     {
         public char First;
         public int Second;
-        public Pair(char x, int y)
+        public void set(char x, int y)
         {
             First = x;
             Second = y;
+        }
+        public char getPairFirst()
+        {
+            return First;
+        }
+        public int getPairSecond()
+        {
+            return Second;
         }
 
         public Pair()
@@ -227,7 +238,62 @@ namespace Calc2
         }
 
     }
+    //dont use try-catch:freezing now
+    class CheckConvertNum
+    {
 
+        object val;
+        string eq;
+
+        object Convert(Boolean period)
+        {
+            int eq_i;
+            float eq_f;
+            if (period)
+            {
+                float.TryParse(eq, out eq_f);
+                //例外処理は後で実装
+                return eq_f;
+            }
+            else
+            {
+                int.TryParse(eq, out eq_i);
+                //例外処理は後で実装
+                return eq_i;
+            }
+
+        }
+        bool CheckNum()
+        {
+            bool period = false;
+            for (int i = 0; i < eq.Length; i++)
+            {
+                if (eq[i] == 46)
+                {
+                    if (period)
+                    {
+                        //error : 2periods is exsit in this eq.
+                        return false;
+                    }
+                    period = true;
+                }
+                else if (eq[i] <= 57 && 48 <= eq[i])
+                {
+                    //no problem
+                }
+                else
+                {
+                    return false;
+                    //this eq has not number char
+                }
+            }
+            return true;
+        }
+        CheckConvertNum(string eq)
+        {
+            this.eq = eq;
+        }
+    }
     /*括弧：bracketの内側をdevidedに送るクラス*/
     public class RmBracket
     {
