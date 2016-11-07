@@ -10,14 +10,23 @@ namespace Calc2
     {
         static void Main(string[] args)
         {
-            string mathstring = null;
+            //string mathstring = null;
             Value value = new Value();
+
             //mathstring = Console.ReadLine();
-            mathstring = "(((1+2)*(3+4)))+1";//for debug
-            double ans = value.devided(mathstring);
-            Console.WriteLine(ans);
+            //mathstring = "1/2+3/4";//for debug
+            //double ans = value.devided(mathstring);
+            //Console.WriteLine(ans);
             Console.ReadLine();
 
+            ValFrac valfra = new ValFrac();
+            CalcFrac Cfra = new CalcFrac();
+            Frac flac1 = new Frac();
+            flac1.SetFrac(4, 9);
+            Frac flac2 = new Frac(3, 7);
+            FracOut fracout = new FracOut(Cfra.FracAdder(flac1, flac2));
+            FracOut fracout2 = new FracOut(Cfra.TimesFrac(flac1, flac2));
+            Console.ReadLine();
         }
     }
     public class Value
@@ -69,8 +78,6 @@ namespace Calc2
                 int bra_state = 0;
                 for (int i = 0; i < operater.Length; i++)
                 {
-
-
                     for (int j = 0; j < eq.Length; j++)
                     {
                         if (eq[j] == '(')
@@ -94,7 +101,7 @@ namespace Calc2
                 if (pair.Second == 0)
                 {
                     eq = eq.Substring(1, eq.Length - 2);
-                    Bra_rm=true;
+                    Bra_rm = true;
                 }
             } while (Bra_rm);
             //文字列を分解する。
@@ -117,6 +124,90 @@ namespace Calc2
                     break;
             }
             return num;
+        }
+    }
+
+    internal class ValFrac
+    {
+        int num;
+        void Eval(string eq)
+        {
+
+
+        }
+        internal ValFrac()
+        {
+
+        }
+    }
+    class Frac
+    {
+        private int Denominator;
+        private int Molecular;
+        internal void SetFrac(int Denominator, int Molecular)
+        {
+            this.Denominator = Denominator;//分母
+            this.Molecular = Molecular;//分子
+        }
+        internal Frac()
+        {
+
+        }
+        internal Frac(int Denominator, int Molecular)
+        {
+            this.Denominator = Denominator;//分母
+            this.Molecular = Molecular;//分子
+        }
+        internal Frac(Frac frac)
+        {
+            this.Denominator = frac.GetDenominator();
+            this.Molecular = frac.GetMolecular();
+        }
+
+        internal int GetDenominator()
+        {
+            return Denominator;
+        }
+        internal int GetMolecular()
+        {
+            return Molecular;
+        }
+        internal void Increase(int x, Frac frac)// x is Denominator
+        {
+            Denominator = frac.GetDenominator() * x;
+            Molecular = frac.GetMolecular() * x;
+        }
+    }
+    internal class CalcFrac
+    {
+        Frac ans = new Frac();
+        internal Frac FracAdder(Frac frac1, Frac frac2)
+        {
+            Frac tempfrac1 = new Frac();
+            Frac tempfrac2 = new Frac();
+            tempfrac2.Increase(frac1.GetDenominator(), frac2);
+            tempfrac1.Increase(frac2.GetDenominator(), frac1);
+            ans.SetFrac(tempfrac2.GetDenominator(),
+                tempfrac1.GetMolecular() + tempfrac2.GetMolecular());
+            return ans;
+        }
+        internal Frac TimesFrac(Frac frac1, Frac frac2)
+        {
+            ans.SetFrac(frac1.GetDenominator() * frac2.GetDenominator(),
+                frac1.GetMolecular() * frac2.GetMolecular());
+            return ans;
+        }
+        internal CalcFrac()
+        {
+        }
+    }
+    internal class FracOut
+    {
+        internal FracOut(Frac frac)
+        {
+            Console.WriteLine(frac.GetMolecular());
+            Console.WriteLine("---------------------");
+            Console.WriteLine(frac.GetDenominator());
         }
     }
 
@@ -233,37 +324,4 @@ namespace Calc2
 
     }
 
-    /*括弧：bracketの内側をdevidedに送るクラス*/
-    public class RmBracket
-    {
-        Pair pair = new Pair();
-        string eq;
-        RmBracket(string eq)
-        {
-            eq = this.eq;
-        }
-        public string GetInsideBracket()//括弧の中の数式を探し、それの解を求める。
-        {
-            //もっとも左端の括弧を探す
-            int leftpos = 0, rightpos = 0;
-            for (int i = 0; i < eq.Length; i++)
-            {
-                if (eq[i] == '(')
-                {
-                    leftpos = i;
-                }
-            }
-            //もっとも左端の括弧に最も近い右端の括弧を探す
-            for (int i = leftpos; i < eq.Length; i++)
-            {
-                if (eq[i] == ')')
-                {
-                    rightpos = i;
-                }
-            }
-            //とりあえず括弧による数式の順序変更のみを行えるようにする(変数を扱うことは考えない)
-
-            return null;
-        }
-    }
 }
