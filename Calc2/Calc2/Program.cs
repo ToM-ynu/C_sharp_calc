@@ -22,10 +22,11 @@ namespace Calc2
             ValFrac valfra = new ValFrac();
             CalcFrac Cfra = new CalcFrac();
             Frac flac1 = new Frac();
-            flac1.SetFrac(4, 9);
-            Frac flac2 = new Frac(3, 7);
-            FracOut fracout = new FracOut(Cfra.FracAdder(flac1, flac2));
-            FracOut fracout2 = new FracOut(Cfra.TimesFrac(flac1, flac2));
+            //flac1.SetFrac(4, 9);
+            //Frac flac2 = new Frac(3, 7);
+            //FracWrite fracout = new FracWrite(Cfra.FracAdder(flac1, flac2));
+            //FracWrite fracout2 = new FracWrite(Cfra.TimesFrac(flac1, flac2));
+            //FracWrite outfrac3 = new FracWrite(Cfra.Euclidean(Cfra.TimesFrac(flac1,flac2)));
             Console.ReadLine();
         }
     }
@@ -34,15 +35,15 @@ namespace Calc2
 
         Value Left;
         Value Right;
-        double num;
+        int num;
 
         /*括弧がなくなった時、呼び出す*/
-        public double devided(string eq)
+        internal Frac devided(string eq)
         {
-
+            Frac frac = new Frac();
             try
             {
-                num = double.Parse(eq);//式が数字だけかどうかを判断する
+                num = int.Parse(eq);//式が数字だけかどうかを判断する
             }
             catch (FormatException)//string eqが式である時
             {
@@ -53,9 +54,10 @@ namespace Calc2
                 Console.WriteLine("intの最大値を超えてしまいました");
                 Environment.Exit(-1);
             }
-            return num;
+            frac.SetFrac(1, num);
+            return frac;
         }
-        private double calc(string eq)
+        private int calc(string eq)
         {
             //括弧をみつけたら中を無視する。
             //一番外に括弧があるときは、最初に取り除く。
@@ -65,7 +67,7 @@ namespace Calc2
             Minus minus = new Minus();
             Times times = new Times();
             Right = new Value();
-            Left = new Calc2.Value();
+            Left = new Value();
             char op;
             //一番外側の括弧の位置を把握する必要がある。
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
@@ -105,22 +107,22 @@ namespace Calc2
                 }
             } while (Bra_rm);
             //文字列を分解する。
-            double a = 0, b = 0;
+            Frac a = new Frac();
+            Frac b = new Frac();
             a = Left.devided(eq.Substring(0, pair.Second));
             b = Right.devided(eq.Substring(pair.Second + 1));
+            CalcFrac calcfrac = new CalcFrac();
             switch (pair.First)
             {
                 case '+':
-                    num = plus.calc(a, b);
+                    calcfrac.FracAdder(a, b);
                     break;
                 case '-':
-                    num = minus.calc(a, b);
+                    calcfrac.FracAdder(a, b);
                     break;
                 case '*':
-                    num = times.calc(a, b);
                     break;
                 case '/':
-                    num = devided.calc(a, b);
                     break;
             }
             return num;
@@ -129,12 +131,18 @@ namespace Calc2
 
     internal class ValFrac
     {
-        int num;
+        int num = 0;
         void Eval(string eq)
         {
-
-
+            bool num_check = false;
+            num_check = int.TryParse(eq, out num);
+            if (num_check == false)
+            {
+                Console.WriteLine("Serious Error has happened.");
+                Environment.Exit(-1);
+            }
         }
+
         internal ValFrac()
         {
 
@@ -197,13 +205,39 @@ namespace Calc2
                 frac1.GetMolecular() * frac2.GetMolecular());
             return ans;
         }
+        internal Frac DeviedFrac(Frac frac1, Frac frac2)
+        {
+            ans.SetFrac(frac1.GetDenominator() * frac2.GetMolecular(),
+                frac1.GetMolecular() * frac2.GetDenominator());
+            return ans;
+        }
+        Frac Euclidean(Frac frac1)
+        {
+            int[] temp = new int[20];
+            int lastnum = 0;
+            temp[0] = frac1.GetDenominator();
+            temp[1] = frac1.GetMolecular();
+            for (int i = 2; i < temp.Length; i++)
+            {
+                temp[i] = temp[i - 2] % temp[i - 1];
+                if (temp[i] == 0)
+                {
+                    lastnum = i - 1;
+                    break;
+                }
+            }
+            Frac ans = new Frac(temp[0] / temp[lastnum], temp[1] / temp[lastnum]);
+            return ans;
+
+        }
+
         internal CalcFrac()
         {
         }
     }
-    internal class FracOut
+    internal class FracWrite
     {
-        internal FracOut(Frac frac)
+        internal FracWrite(Frac frac)
         {
             Console.WriteLine(frac.GetMolecular());
             Console.WriteLine("---------------------");
@@ -240,7 +274,6 @@ namespace Calc2
             return a + b;
         }
     }
-
     class Minus : ToM_Math
     {
         public override double calc(double a, long b)
@@ -262,7 +295,6 @@ namespace Calc2
             return a - b;
         }
     }
-
     class Times : ToM_Math
     {
         public override double calc(double a, long b)
@@ -322,6 +354,47 @@ namespace Calc2
 
         }
 
+    }
+
+    public class Numeral
+    {
+        Numeral numeral;
+        private bool imagenaly = false;
+        private double num_d;
+        private int num_i;
+        private Frac num_f;
+        //get
+        Numeral GetNumeral()
+        {
+            return numeral;
+        }
+        //set
+        void setRealNumeral(int num_i)
+        {
+            this.num_i = num_i;
+        }
+        void setRealNumeral(double num_d)
+        {
+            this.num_d = num_d;
+        }
+        void setRealNumeral(Frac num_f)
+        {
+            this.num_f = num_f;
+        }
+        Numeral()
+        {
+        }
+
+    }
+    class Exponential
+    {
+        Numeral numeral;
+
+
+        Exponential()
+        {
+
+        }
     }
 
 }
