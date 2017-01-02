@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value value = new Value();
-            //mathstring = Console.ReadLine();
-            mathstring = "(((1+2)*(3+4)))+1";//for debug
+            mathstring = Console.ReadLine();
+            //mathstring = "(((1+2)*(3+4)))+1";//for debug
             double ans = value.devided(mathstring);
             Console.WriteLine(ans);
             Console.ReadLine();
@@ -94,7 +94,7 @@ namespace Calc2
                 if (pair.Second == 0)
                 {
                     eq = eq.Substring(1, eq.Length - 2);
-                    Bra_rm=true;
+                    Bra_rm = true;
                 }
             } while (Bra_rm);
             //文字列を分解する。
@@ -264,6 +264,19 @@ namespace Calc2
             //とりあえず括弧による数式の順序変更のみを行えるようにする(変数を扱うことは考えない)
 
             return null;
+        }
+    }
+    public class CheckEqString
+    {
+
+        CheckEqString(string eq)
+        {
+            for (int i = 0; i < eq.Length; i++)
+            {
+                //括弧の数がおかしい。
+                //演算子が重複している。
+                //無効な文字列が挿入されている。
+            }
         }
     }
 }
