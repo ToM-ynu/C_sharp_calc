@@ -11,15 +11,19 @@ namespace Calc2
         static void Main(string[] args)
         {
             string mathstring = null;
-            Value value = new Value();
-            mathstring = Console.ReadLine();
-            //mathstring = "(((1+2)*(3+4)))+1";//for debug
-            double ans = value.devided(mathstring);
-            Console.WriteLine(ans);
+            Value_Fra value = new Value_Fra();
+            //mathstring = Console.ReadLine();
+            mathstring = "(1+2)/2*3-1";//for debug
+            Fraction ans = value.devided(mathstring);
+            Console.WriteLine(ans.numerator);
+            Console.WriteLine("-----");
+            Console.WriteLine(ans.denominator);
             Console.ReadLine();
 
         }
     }
+
+    #region Value class oldversion
     public class Value
     {
 
@@ -27,10 +31,15 @@ namespace Calc2
         Value Right;
         double num;
 
+
         /*括弧がなくなった時、呼び出す*/
         public double devided(string eq)
         {
-
+            if (eq == "")
+            {
+                Console.WriteLine("入力されていない");
+                return 0;
+            }
             try
             {
                 num = double.Parse(eq);//式が数字だけかどうかを判断する
@@ -56,7 +65,7 @@ namespace Calc2
             Minus minus = new Minus();
             Times times = new Times();
             Right = new Value();
-            Left = new Calc2.Value();
+            Left = new Value();
             char op;
             //一番外側の括弧の位置を把握する必要がある。
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
@@ -214,7 +223,7 @@ namespace Calc2
             return a / b;
         }
     }
-
+    #endregion
     public class Pair
     {
         public char First;
@@ -279,4 +288,186 @@ namespace Calc2
         }
     }
     */
+
+
+
+    public class Value_Fra
+    {
+
+        Value_Fra Left;
+        Value_Fra Right;
+        Fraction num;
+
+
+        /*括弧がなくなった時、呼び出す*/
+        public Fraction devided(string eq)
+        {
+            int temp;
+            if (eq == "")
+            {
+                Console.WriteLine("入力されていない");
+                Environment.Exit(-1);
+            }
+            try
+            {
+                temp = int.Parse(eq);//式が数字だけかどうかを判断する
+                this.num.numerator = temp;
+                num.denominator = 1;
+            }
+            catch (FormatException)//string eqが式である時
+            {
+                num = calc(eq);
+                return num;
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("intの最大値を超えてしまいました");
+                Environment.Exit(-1);
+            }
+            return this.num;
+        }
+        private Fraction calc(string eq)
+        {
+            //括弧をみつけたら中を無視する。
+            //一番外に括弧があるときは、最初に取り除く。
+            Pair pair = new Pair();
+            FraCalc fraCal = new FraCalc();
+            Right = new Value_Fra();
+            Left = new Value_Fra();
+            char op;
+            //一番外側の括弧の位置を把握する必要がある。
+            //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
+            //一番外側の括弧を取り除くことが必要
+            bool Bra_rm = true;
+            do
+            {
+                Bra_rm = false;
+                char[] operater = new char[] { '+', '-', '*', '/' };
+                int bra_state = 0;
+                for (int i = 0; i < operater.Length; i++)
+                {
+
+                    for (int j = 0; j < eq.Length; j++)
+                    {
+                        if (eq[j] == '(')
+                        {
+                            bra_state++;
+                        }
+                        else if (eq[j] == ')')
+                        {
+                            bra_state--;
+                        }
+                        op = eq[j];
+                        if (op == operater[i] && bra_state == 0)//括弧が開いているときはbra_state==0になっている。
+                        {
+                            pair.First = operater[i];
+                            pair.Second = j;
+                            goto LOOPOUT;
+                        }
+                    }
+                }
+            LOOPOUT:
+                if (pair.Second == 0)
+                {
+                    eq = eq.Substring(1, eq.Length - 2);
+                    Bra_rm = true;
+                }
+            } while (Bra_rm);
+            //文字列を分解する。
+            Fraction a, b;
+            a = Left.devided(eq.Substring(0, pair.Second));
+            b = Right.devided(eq.Substring(pair.Second + 1));
+            switch (pair.First)
+            {
+                case '+':
+                    num = fraCal.Plus(a, b);
+                    break;
+                case '-':
+                    num = fraCal.Minus(a, b);
+                    break;
+                case '*':
+                    num = fraCal.Times(a, b);
+                    break;
+                case '/':
+                    num = fraCal.Devided(a, b);
+                    break;
+            }
+            return num;
+        }
+    }
+    public class FraCalc
+    {
+        public Fraction Plus(Fraction fra1, Fraction fra2)
+        {
+            Fraction ans;
+            ans.numerator = fra1.denominator * fra2.numerator + fra2.denominator * fra1.numerator;
+            ans.denominator = fra1.denominator * fra2.denominator;
+            ans = Redction(ans);
+            return ans;
+        }
+        /// <summary>
+        /// 分数の引き算メソッド
+        /// </summary>
+        /// <param name="fra1">引かれる数(a)：a-b</param>
+        /// <param name="fra2">引く数(b):a-b</param>
+        /// <returns></returns>
+        public Fraction Minus(Fraction fra1, Fraction fra2)
+        {
+            Fraction ans;
+            ans.numerator = fra2.denominator * fra1.numerator - fra1.denominator * fra2.numerator;
+            ans.denominator = fra1.denominator * fra2.denominator;
+            ans = Redction(ans);
+            return ans;
+        }
+        public Fraction Times(Fraction fra1, Fraction fra2)
+        {
+            Fraction ans;
+            ans.denominator = fra1.denominator * fra2.denominator;
+            ans.numerator = fra1.numerator * fra2.numerator;
+            ans = Redction(ans);
+            return ans;
+        }
+        /// <summary>
+        /// frac1/frac2で想定
+        /// </summary>
+        /// <param name="fra1">割られる数(a):a/b　</param>
+        /// <param name="fra2">割る数(b):a/b</param>
+        /// <returns></returns>
+        public Fraction Devided(Fraction fra1, Fraction fra2)
+        {
+            Fraction ans;
+            ans.denominator = fra1.denominator * fra2.numerator;
+            ans.numerator = fra1.numerator * fra2.denominator;
+            ans = Redction(ans);
+            return ans;
+        }
+        /// <summary>
+        /// 通分するメソッド：ユークリッド互除法で実装
+        /// </summary>
+        /// <param name="frac">分数</param>
+        /// <returns></returns>
+        private Fraction Redction(Fraction frac)
+        {
+            int max = Math.Max(frac.denominator, frac.numerator);
+            int min = Math.Min(frac.denominator, frac.numerator);
+            int surplus;
+            while (true)
+            {
+                surplus = max % min;
+                if (surplus == 0)
+                {
+                    break;
+                }
+                max = min;
+                min = surplus;
+            }
+            frac.denominator = frac.denominator / min;
+            frac.numerator = frac.numerator / min;
+            return frac;
+        }
+    }
+    public struct Fraction
+    {
+        public int denominator, numerator;
+    }
 }
