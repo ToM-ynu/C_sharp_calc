@@ -13,7 +13,7 @@ namespace Calc2
             string mathstring = null;
             Value_Fra value = new Value_Fra();
             //mathstring = Console.ReadLine();
-            mathstring = "(1+2)/2*3-1";//for debug
+            mathstring = "1+2^2/6";//for debug
             Fraction ans = value.devided(mathstring);
             Console.WriteLine(ans.numerator);
             Console.WriteLine("-----");
@@ -310,6 +310,10 @@ namespace Calc2
             }
             try
             {
+                //if ((Math.Ceiling(double.Parse(eq)) - Math.Floor(double.Parse(eq))) == 0)
+                //{
+                //    Console.WriteLine("整数");
+                //}
                 temp = int.Parse(eq);//式が数字だけかどうかを判断する
                 this.num.numerator = temp;
                 num.denominator = 1;
@@ -342,7 +346,7 @@ namespace Calc2
             do
             {
                 Bra_rm = false;
-                char[] operater = new char[] { '+', '-', '*', '/' };
+                char[] operater = new char[] { '+', '-', '*', '/', '^' };
                 int bra_state = 0;
                 for (int i = 0; i < operater.Length; i++)
                 {
@@ -391,6 +395,9 @@ namespace Calc2
                 case '/':
                     num = fraCal.Devided(a, b);
                     break;
+                case '^':
+                    num = fraCal.Power(a, b);
+                    break;
             }
             return num;
         }
@@ -438,6 +445,14 @@ namespace Calc2
             Fraction ans;
             ans.denominator = fra1.denominator * fra2.numerator;
             ans.numerator = fra1.numerator * fra2.denominator;
+            ans = Redction(ans);
+            return ans;
+        }
+        public Fraction Power(Fraction fra1, Fraction fra2)
+        {
+            Fraction ans;
+            ans.denominator = (int)Math.Round(Math.Pow(fra1.denominator, fra2.numerator / fra2.denominator), 0);
+            ans.numerator = (int)Math.Round(Math.Pow(fra1.numerator, fra2.numerator / fra2.denominator), 0);
             ans = Redction(ans);
             return ans;
         }
