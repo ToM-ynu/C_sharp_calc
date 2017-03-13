@@ -12,8 +12,8 @@ namespace Calc2
         {
             string mathstring = null;
             Value_Fra value = new Value_Fra();
-            //mathstring = Console.ReadLine();
-            mathstring = "1+2^2/6";//for debug
+            mathstring = Console.ReadLine();
+            //mathstring = "1+2^2/6";//for debug
             Fraction ans = value.devided(mathstring);
             Console.WriteLine(ans.numerator);
             Console.WriteLine("-----");
@@ -343,14 +343,13 @@ namespace Calc2
             //一番外側の括弧の左右に演算子がない場合もあるので、ちょっと困る。
             //一番外側の括弧を取り除くことが必要
             bool Bra_rm = true;
+            char[] operater = new char[] { '+', '-', '*', '/', '^' };
             do
             {
                 Bra_rm = false;
-                char[] operater = new char[] { '+', '-', '*', '/', '^' };
                 int bra_state = 0;
                 for (int i = 0; i < operater.Length; i++)
                 {
-
                     for (int j = 0; j < eq.Length; j++)
                     {
                         if (eq[j] == '(')
