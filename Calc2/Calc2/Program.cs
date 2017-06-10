@@ -290,7 +290,7 @@ namespace Calc2
     */
 
 
-
+    #region olderversion
     public class Value_Fra
     {
 
@@ -401,6 +401,7 @@ namespace Calc2
             return num;
         }
     }
+    #endregion
     public class FraCalc
     {
         public Fraction Plus(Fraction fra1, Fraction fra2)
@@ -483,5 +484,21 @@ namespace Calc2
     public struct Fraction
     {
         public int denominator, numerator;
+    }
+
+
+
+    public class value_stack
+    {
+        Stack<object> Fragment = new Stack<object>();
+        public void hoge(string eq)
+        {
+            for (int i = 0; i < eq.Length; i++)
+            {
+                char[] operater = new char[] { '+', '-', '*', '/' };
+
+            }
+        }
+
     }
 }
